@@ -4,37 +4,85 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BOAT AI LAB</title>
+<title>BOAT AI LAB v2.1</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#07111f;color:#fff;font-family:system-ui,sans-serif;padding:18px}
-h1{color:#61dfb3;font-size:29px;margin:16px 0 4px}
+body{
+ margin:0;padding:18px;background:#07111f;
+ color:white;font-family:system-ui,sans-serif
+}
+h1{color:#61dfb3;font-size:29px;margin:12px 0 4px}
+h2{font-size:20px;margin:0 0 15px}
 small,.muted{color:#94a3b8}
-.card{background:#14243b;border-radius:16px;padding:18px;margin:16px 0}
-h2{font-size:19px;margin:0 0 14px}
-label{display:block;margin:12px 0 6px;color:#cbd5e1}
-select,input{background:#0b1729;color:white;border:1px solid #41516a;border-radius:9px;padding:11px;font-size:16px;width:100%}
-button{background:#61dfb3;color:#07111f;border:0;border-radius:10px;padding:15px;font-weight:800;font-size:17px;width:100%;margin-top:15px}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.boat{padding:10px;border-radius:10px;background:#0b1729;text-align:center}
-.boat input{text-align:center;margin-top:8px}
-.num{display:inline-block;border-radius:6px;padding:5px 10px;font-weight:bold}
-.n1{background:white;color:black}
-.n2{background:#333;color:white}
-.n3{background:#e33;color:white}
-.n4{background:#276bea;color:white}
-.n5{background:#e8ce35;color:black}
-.n6{background:#24935a;color:white}
-.result{background:#0b1729;border-radius:10px;padding:14px;margin-top:12px}
-.big{font-size:25px;font-weight:800;color:#61dfb3;word-break:break-word}
-.line{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #293b52}
-.total{font-size:20px;font-weight:bold;color:#61dfb3}
-.note{font-size:12px;color:#94a3b8;line-height:1.7}
+.card{
+ background:#14243b;border-radius:17px;
+ padding:18px;margin:17px 0
+}
+label{display:block;margin:12px 0 7px;color:#cbd5e1}
+select,input{
+ width:100%;background:#0b1729;color:white;
+ border:1px solid #43546d;border-radius:9px;
+ padding:12px;font-size:17px
+}
+.grid{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:10px
+}
+.boat{
+ background:#0b1729;padding:10px 6px;
+ border-radius:12px;text-align:center
+}
+.boat input{text-align:center;margin-top:10px}
+.num{
+ display:inline-block;padding:7px;
+ border-radius:7px;font-weight:800
+}
+.n1{background:#fff;color:#111}
+.n2{background:#333;color:#fff}
+.n3{background:#e43b3b;color:#fff}
+.n4{background:#2563eb;color:#fff}
+.n5{background:#e5cb39;color:#111}
+.n6{background:#24965c;color:#fff}
+button{
+ width:100%;padding:16px;border:0;
+ border-radius:12px;background:#61dfb3;
+ color:#07111f;font-size:18px;
+ font-weight:800;margin-top:17px
+}
+.panel{
+ background:#0b1729;border-radius:12px;
+ padding:16px;margin:13px 0
+}
+.big{
+ font-size:24px;font-weight:900;
+ color:#61dfb3;line-height:1.6
+}
+.line{
+ display:flex;justify-content:space-between;
+ gap:10px;padding:11px 0;
+ border-bottom:1px solid #34445b
+}
+.line:last-child{border:0}
+.total{
+ color:#61dfb3;font-size:21px;
+ font-weight:800
+}
+.note{
+ font-size:12px;color:#94a3b8;
+ line-height:1.7
+}
+.tag{
+ display:inline-block;background:#234a48;
+ color:#8cf1c9;border-radius:20px;
+ padding:6px 12px;font-weight:700
+}
 </style>
 </head>
 <body>
+
 <h1>🚤 BOAT AI LAB</h1>
-<small>三連単専用・予想シミュレーター</small>
+<small>v2.1｜三連単・買い目自動調整</small>
 
 <div class="card">
 <h2>レース選択</h2>
@@ -42,158 +90,254 @@ button{background:#61dfb3;color:#07111f;border:0;border-radius:10px;padding:15px
 <select id="venue"></select>
 <label>レース番号</label>
 <select id="race"></select>
-<label>予想の広さ</label>
-<select id="mode">
-<option value="6">絞り込み（6点）</option>
-<option value="10" selected>標準（10点）</option>
-<option value="14">広め（14点）</option>
-</select>
 </div>
 
 <div class="card">
-<h2>6艇の評価</h2>
-<p class="muted">各艇の総合評価を1〜10で入力</p>
+<h2>6艇の総合評価</h2>
+<p class="muted">各艇を1〜10で評価</p>
 <div class="grid" id="boats"></div>
-<p class="note">現在は仮の評価を初期入力しています。実データではありません。</p>
-<button onclick="predict()">三連単予想を生成</button>
+<p class="note">
+初期値はサンプルです。
+実際の選手成績・展示情報は未取得です。
+</p>
+<button onclick="predict()">🚀 三連単予想を生成</button>
 </div>
 
 <div class="card" id="output">
-<h2>AI予想</h2>
-<p class="muted">評価を確認して予想生成を押してな！</p>
+<h2>予想結果</h2>
+<p class="muted">
+評価を入力して予想を生成してな！
+</p>
 </div>
 
 <div class="card">
-<h2>検証ルール</h2>
-<div class="line"><span>券種</span><b>三連単のみ</b></div>
-<div class="line"><span>仮想投資額</span><b>1,500円</b></div>
-<div class="line"><span>購入単位</span><b>100円</b></div>
-<div class="line"><span>買い目数</span><b>6〜14点</b></div>
-<p class="note">このバージョンは入力評価を使った簡易計算です。実際のAI学習、リアルタイム展示・オッズ取得、的中率・回収率の検証は今後追加します。</p>
+<h2>予想ルール</h2>
+<div class="line">
+<span>券種</span><b>三連単のみ</b>
+</div>
+<div class="line">
+<span>買い目</span><b>5〜15点を目安に自動調整</b>
+</div>
+<div class="line">
+<span>仮想投資額</span><b>1,500円</b>
+</div>
+<div class="line">
+<span>購入単位</span><b>100円</b>
+</div>
+<p class="note">
+現在は手入力評価による簡易シミュレーターです。
+実際のAI学習、リアルタイムデータ取得、
+オッズ・期待値分析は未実装です。
+</p>
 </div>
 
 <script>
 const venues=[
-"桐生","戸田","江戸川","平和島","多摩川","浜名湖",
-"蒲郡","常滑","津","三国","びわこ","住之江",
-"尼崎","鳴門","丸亀","児島","宮島","徳山",
-"下関","若松","芦屋","福岡","唐津","大村"
+"桐生","戸田","江戸川","平和島","多摩川",
+"浜名湖","蒲郡","常滑","津","三国","びわこ",
+"住之江","尼崎","鳴門","丸亀","児島",
+"宮島","徳山","下関","若松","芦屋",
+"福岡","唐津","大村"
 ];
 
 const venue=document.getElementById("venue");
+const race=document.getElementById("race");
+const boats=document.getElementById("boats");
+
 venues.forEach(v=>venue.add(new Option(v,v)));
 
-const race=document.getElementById("race");
 for(let i=1;i<=12;i++){
-race.add(new Option(i+"R",i));
+ race.add(new Option(i+"R",i));
 }
 
-const boats=document.getElementById("boats");
 const initial=[9,8,7,6,5,4];
 
 for(let i=1;i<=6;i++){
-boats.innerHTML+=`
-<div class="boat">
-<span class="num n${i}">${i}号艇</span>
-<input id="s${i}" type="number" min="1" max="10"
-value="${initial[i-1]}">
-</div>`;
+ boats.innerHTML+=`
+ <div class="boat">
+ <span class="num n${i}">${i}号艇</span>
+ <input id="s${i}" type="number"
+ min="1" max="10" step="1"
+ value="${initial[i-1]}">
+ </div>`;
+}
+
+// 同じ1着・2着をまとめて表示
+function makeFormations(selected){
+ const groups={};
+
+ selected.forEach(x=>{
+  if(!groups[x.a])groups[x.a]={};
+  if(!groups[x.a][x.b]){
+   groups[x.a][x.b]=[];
+  }
+  groups[x.a][x.b].push(x.c);
+ });
+
+ const lines=[];
+
+ Object.keys(groups).sort().forEach(a=>{
+  const secondGroups={};
+
+  Object.keys(groups[a]).sort().forEach(b=>{
+   const third=[...new Set(groups[a][b])]
+    .sort((x,y)=>x-y).join("");
+
+   if(!secondGroups[third]){
+    secondGroups[third]=[];
+   }
+   secondGroups[third].push(b);
+  });
+
+  Object.entries(secondGroups).forEach(
+   ([third,bs])=>{
+    lines.push(`${a}-${bs.join("")}-${third}`);
+   }
+  );
+ });
+
+ return lines;
 }
 
 function predict(){
-const scores=[];
-for(let i=1;i<=6;i++){
-let n=Number(document.getElementById("s"+i).value);
-if(!Number.isFinite(n)||n<1||n>10){
-alert("評価は1〜10で入力してな");
-return;
-}
-scores.push(n);
-}
+ const scores=[];
 
-const combos=[];
-for(let a=1;a<=6;a++){
-for(let b=1;b<=6;b++){
-for(let c=1;c<=6;c++){
-if(a===b||a===c||b===c)continue;
+ for(let i=1;i<=6;i++){
+  const raw=document.getElementById("s"+i).value;
+  const n=Number(raw);
 
-let score=
-scores[a-1]*1.5+
-scores[b-1]*1.0+
-scores[c-1]*0.65;
+  if(raw.trim()==="" ||
+     !Number.isInteger(n) ||
+     n<1 || n>10){
+   alert("評価は1〜10の整数で入力してな");
+   return;
+  }
+  scores.push(n);
+ }
 
-// 内枠有利を仮定した簡易補正
-score+=(7-a)*0.45;
+ const spread=
+  Math.max(...scores)-Math.min(...scores);
 
-combos.push({
-a,b,c,score,
-key:`${a}-${b}-${c}`
-});
-}
-}
-}
+ const combos=[];
 
-combos.sort((x,y)=>y.score-x.score);
+ for(let a=1;a<=6;a++){
+  for(let b=1;b<=6;b++){
+   for(let c=1;c<=6;c++){
+    if(a===b||a===c||b===c)continue;
 
-const count=Number(document.getElementById("mode").value);
-const selected=combos.slice(0,count);
+    const score=
+     scores[a-1]*1.5+
+     scores[b-1]*1.0+
+     scores[c-1]*0.65+
+     (7-a)*0.45;
 
-const bets=selected.map(x=>({...x,amount:100}));
-let remaining=1500-count*100;
+    combos.push({
+     a,b,c,score,
+     key:`${a}-${b}-${c}`
+    });
+   }
+  }
+ }
 
-// 上位の買い目に100円ずつ追加
-let k=0;
-while(remaining>0){
-bets[k%Math.min(3,count)].amount+=100;
-remaining-=100;
-k++;
-}
+ combos.sort((x,y)=>
+  y.score-x.score ||
+  x.a-y.a ||
+  x.b-y.b ||
+  x.c-y.c
+ );
 
-// フォーメーション風に1着・2着ごとにまとめる
-const groups={};
-for(const x of selected){
-const key=`${x.a}-${x.b}`;
-if(!groups[key])groups[key]=[];
-groups[key].push(x.c);
-}
+ // 買い目点数を可変にする
+ // 上位候補とのスコア差を基準に採用
+ const topScore=combos[0].score;
 
-const formations=Object.entries(groups).map(
-([key,third])=>key+"-"+third.sort().join("")
-);
+ // 評価差が小さいほど許容幅を広くする
+ const tolerance=
+  1.8+(10-spread)*0.28;
 
-const output=document.getElementById("output");
-output.innerHTML=`
-<h2>🏁 ${venue.value} ${race.value}R</h2>
-<p class="muted">三連単・仮予想</p>
-<div class="result">
-<div class="muted">買い目フォーメーション</div>
-<div class="big" style="font-size:20px">
-${formations.join("<br>")}
-</div>
-</div>
-<div class="result">
-<div class="line">
-<span>買い目点数</span>
-<b>${count}点</b>
-</div>
-<div class="line">
-<span>仮想投資額</span>
-<b>1,500円</b>
-</div>
-</div>
-<h2 style="margin-top:20px">買い目・資金配分</h2>
-${bets.map((x,i)=>`
-<div class="line">
-<span>${i+1}. ${x.key}</span>
-<b>${x.amount.toLocaleString()}円</b>
-</div>
-`).join("")}
-<div class="line total">
-<span>合計</span>
-<span>${bets.reduce((s,x)=>s+x.amount,0).toLocaleString()}円</span>
-</div>
-<p class="note">※買い目は入力評価に基づく順位付けで、的中を保証するものではありません。フォーメーション表記では同じ艇の重複を除外しています。</p>
-`;
+ let count=combos.filter(
+  x=>topScore-x.score<=tolerance
+ ).length;
+
+ // 基本5〜15点、100円単位で購入可能
+ count=Math.max(5,Math.min(15,count));
+
+ const selected=combos.slice(0,count);
+
+ let level;
+ if(count<=7){
+  level="絞り込み型";
+ }else if(count<=10){
+  level="標準型";
+ }else{
+  level="混戦型";
+ }
+
+ // 各買い目に最低100円
+ const bets=selected.map(x=>({
+  ...x,amount:100
+ }));
+
+ let remaining=1500-count*100;
+
+ // 余った資金を上位候補へ追加
+ let k=0;
+ while(remaining>=100){
+  bets[k%Math.min(3,count)].amount+=100;
+  remaining-=100;
+  k++;
+ }
+
+ const formations=makeFormations(selected);
+
+ const total=bets.reduce(
+  (sum,x)=>sum+x.amount,0
+ );
+
+ document.getElementById("output").innerHTML=`
+ <h2>🏁 ${venue.value} ${race.value}R</h2>
+ <span class="tag">${level}</span>
+
+ <div class="panel">
+ <div class="line">
+ <span>自動選択した買い目</span>
+ <b>${count}点</b>
+ </div>
+ <div class="line">
+ <span>評価の最大差</span>
+ <b>${spread}</b>
+ </div>
+ </div>
+
+ <div class="panel">
+ <h2>三連単フォーメーション</h2>
+ <div class="big">
+ ${formations.join("<br>")}
+ </div>
+ </div>
+
+ <h2 style="margin-top:22px">
+ 買い目・資金配分
+ </h2>
+
+ ${bets.map((x,i)=>`
+ <div class="line">
+ <span>${i+1}. ${x.key}</span>
+ <b>${x.amount.toLocaleString()}円</b>
+ </div>
+ `).join("")}
+
+ <div class="line total">
+ <span>合計</span>
+ <span>${total.toLocaleString()}円</span>
+ </div>
+
+ <p class="note">
+ ※買い目点数は候補スコアの近さで
+ 自動調整しています。
+ このスコアは実際の的中確率や
+ 回収率を示すものではありません。
+ </p>
+ `;
 }
 </script>
 </body>
