@@ -4,30 +4,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BOAT AI LAB v2.1</title>
+<title>BOAT AI LAB v2.2</title>
 <style>
 *{box-sizing:border-box}
 body{
- margin:0;padding:18px;background:#07111f;
- color:white;font-family:system-ui,sans-serif
+ margin:0;padding:16px;background:#07111f;
+ color:#fff;font-family:system-ui,sans-serif
 }
-h1{color:#61dfb3;font-size:29px;margin:12px 0 4px}
-h2{font-size:20px;margin:0 0 15px}
+h1{color:#61dfb3;font-size:28px;margin:12px 0 4px}
+h2{font-size:20px;margin:0 0 14px}
 small,.muted{color:#94a3b8}
 .card{
- background:#14243b;border-radius:17px;
- padding:18px;margin:17px 0
+ background:#14243b;border-radius:16px;
+ padding:17px;margin:16px 0
 }
 label{display:block;margin:12px 0 7px;color:#cbd5e1}
 select,input{
  width:100%;background:#0b1729;color:white;
  border:1px solid #43546d;border-radius:9px;
- padding:12px;font-size:17px
+ padding:12px;font-size:16px
 }
 .grid{
- display:grid;
- grid-template-columns:repeat(3,1fr);
- gap:10px
+ display:grid;grid-template-columns:repeat(3,1fr);
+ gap:9px
 }
 .boat{
  background:#0b1729;padding:10px 6px;
@@ -38,75 +37,96 @@ select,input{
  display:inline-block;padding:7px;
  border-radius:7px;font-weight:800
 }
-.n1{background:#fff;color:#111}
-.n2{background:#333;color:#fff}
-.n3{background:#e43b3b;color:#fff}
-.n4{background:#2563eb;color:#fff}
+.n1{background:white;color:#111}
+.n2{background:#333;color:white}
+.n3{background:#e43b3b;color:white}
+.n4{background:#2563eb;color:white}
 .n5{background:#e5cb39;color:#111}
-.n6{background:#24965c;color:#fff}
+.n6{background:#24965c;color:white}
 button{
- width:100%;padding:16px;border:0;
+ width:100%;padding:15px;border:0;
  border-radius:12px;background:#61dfb3;
- color:#07111f;font-size:18px;
- font-weight:800;margin-top:17px
+ color:#07111f;font-size:17px;
+ font-weight:800;margin-top:14px
 }
+button:disabled{opacity:.5}
 .panel{
  background:#0b1729;border-radius:12px;
- padding:16px;margin:13px 0
-}
-.big{
- font-size:24px;font-weight:900;
- color:#61dfb3;line-height:1.6
+ padding:15px;margin:12px 0
 }
 .line{
  display:flex;justify-content:space-between;
- gap:10px;padding:11px 0;
+ gap:10px;padding:10px 0;
  border-bottom:1px solid #34445b
 }
 .line:last-child{border:0}
-.total{
- color:#61dfb3;font-size:21px;
- font-weight:800
+.big{
+ font-size:23px;font-weight:900;
+ color:#61dfb3;line-height:1.6
 }
+.total{color:#61dfb3;font-size:21px;font-weight:800}
 .note{
  font-size:12px;color:#94a3b8;
- line-height:1.7
+ line-height:1.7;overflow-wrap:anywhere
 }
 .tag{
  display:inline-block;background:#234a48;
  color:#8cf1c9;border-radius:20px;
  padding:6px 12px;font-weight:700
 }
+.racer{
+ padding:10px 0;border-bottom:1px solid #34445b;
+ font-size:13px;line-height:1.7
+}
 </style>
 </head>
 <body>
 
 <h1>🚤 BOAT AI LAB</h1>
-<small>v2.1｜三連単・買い目自動調整</small>
+<small>v2.2｜実データ取得・三連単予想</small>
 
 <div class="card">
 <h2>レース選択</h2>
+
+<label>開催日</label>
+<input type="date" id="raceDate">
+
 <label>競艇場</label>
 <select id="venue"></select>
+
 <label>レース番号</label>
 <select id="race"></select>
+
+<button id="loadBtn" onclick="loadRace()">
+📡 実データを取得
+</button>
+
+<p id="status" class="note">
+未取得：現在はサンプル評価です。
+</p>
+
+<div id="raceInfo"></div>
 </div>
 
 <div class="card">
 <h2>6艇の総合評価</h2>
-<p class="muted">各艇を1〜10で評価</p>
+<p class="muted">各艇の評価：1〜10</p>
 <div class="grid" id="boats"></div>
+
 <p class="note">
-初期値はサンプルです。
-実際の選手成績・展示情報は未取得です。
+実データを取得すると評価を自動更新します。
+評価は手動でも変更できます。
 </p>
-<button onclick="predict()">🚀 三連単予想を生成</button>
+
+<button onclick="predict()">
+🚀 三連単予想を生成
+</button>
 </div>
 
 <div class="card" id="output">
 <h2>予想結果</h2>
 <p class="muted">
-評価を入力して予想を生成してな！
+レースを選んで予想を生成してな！
 </p>
 </div>
 
@@ -116,7 +136,7 @@ button{
 <span>券種</span><b>三連単のみ</b>
 </div>
 <div class="line">
-<span>買い目</span><b>5〜15点を目安に自動調整</b>
+<span>点数</span><b>5〜15点を目安に可変</b>
 </div>
 <div class="line">
 <span>仮想投資額</span><b>1,500円</b>
@@ -124,10 +144,12 @@ button{
 <div class="line">
 <span>購入単位</span><b>100円</b>
 </div>
+
 <p class="note">
-現在は手入力評価による簡易シミュレーターです。
-実際のAI学習、リアルタイムデータ取得、
-オッズ・期待値分析は未実装です。
+実データは非公式のBoatrace Open APIから取得します。
+更新遅延・欠損・取得失敗の可能性があります。
+現在の予想計算は試作ロジックであり、
+的中率や収益性は検証されていません。
 </p>
 </div>
 
@@ -142,12 +164,21 @@ const venues=[
 
 const venue=document.getElementById("venue");
 const race=document.getElementById("race");
+const dateInput=document.getElementById("raceDate");
 const boats=document.getElementById("boats");
 
-venues.forEach(v=>venue.add(new Option(v,v)));
+const todayJST=new Date(
+ Date.now()+9*60*60*1000
+).toISOString().slice(0,10);
+
+dateInput.value=todayJST;
+
+venues.forEach((v,i)=>{
+ venue.add(new Option(v,String(i+1)));
+});
 
 for(let i=1;i<=12;i++){
- race.add(new Option(i+"R",i));
+ race.add(new Option(i+"R",String(i)));
 }
 
 const initial=[9,8,7,6,5,4];
@@ -162,7 +193,203 @@ for(let i=1;i<=6;i++){
  </div>`;
 }
 
-// 同じ1着・2着をまとめて表示
+let loadedRace=null;
+
+function num(v){
+ if(v===null||v===undefined||v==="")return null;
+ const n=Number(v);
+ return Number.isFinite(n)?n:null;
+}
+
+function safe(v){
+ return String(v??"").replace(
+ /[&<>"']/g,
+ c=>({
+ "&":"&amp;",
+ "<":"&lt;",
+ ">":"&gt;",
+ '"':"&quot;",
+ "'":"&#39;"
+ }[c])
+ );
+}
+
+function show(v,suffix=""){
+ return v===null||v===undefined
+  ?"未発表":safe(v)+suffix;
+}
+
+// 選手情報から簡易評価を計算
+function evaluate(r,p,preview){
+ let value=5;
+
+ const national=num(r.national_win_rate);
+ const local=num(r.local_win_rate);
+ const motor=num(r.motor_top_2_percent);
+ const st=num(r.average_start_timing);
+ const ex=num(p?.exhibition_time);
+
+ if(national!==null){
+  value+=(national-5)*0.9;
+ }
+ if(local!==null){
+  value+=(local-5)*0.25;
+ }
+ if(motor!==null){
+  value+=(motor-35)*0.045;
+ }
+ if(st!==null){
+  value+=(0.16-st)*6;
+ }
+
+ const times=Object.values(
+  preview?.racers||{}
+ ).map(x=>num(x.exhibition_time))
+  .filter(x=>x!==null);
+
+ if(ex!==null&&times.length){
+  const best=Math.min(...times);
+  value+=(best-ex)*4;
+ }
+
+ return Math.max(
+  1,Math.min(10,Math.round(value))
+ );
+}
+
+// 実データ取得
+async function loadRace(){
+ const status=document.getElementById("status");
+ const info=document.getElementById("raceInfo");
+ const btn=document.getElementById("loadBtn");
+
+ loadedRace=null;
+ info.innerHTML="";
+ btn.disabled=true;
+ status.textContent="📡 データ取得中…";
+
+ const d=dateInput.value.replace(/-/g,"");
+
+ if(!/^20\d{6}$/.test(d)){
+  status.textContent="開催日を確認してな";
+  btn.disabled=false;
+  return;
+ }
+
+ const url=
+  "https://boatraceopenapi.github.io/api/v1/"+
+  d.slice(0,4)+"/"+d+".json";
+
+ try{
+  const response=await fetch(
+   url,{cache:"no-store"}
+  );
+
+  if(!response.ok){
+   throw new Error(
+    "データがありません（HTTP "+
+    response.status+"）"
+   );
+  }
+
+  const data=await response.json();
+
+  const stadium=
+   data?.programs?.stadiums?.[venue.value];
+
+  const entry=
+   stadium?.races?.[race.value];
+
+  if(!entry?.racers){
+   throw new Error(
+    "指定レースの出走表がありません"
+   );
+  }
+
+  const preview=entry.preview||{};
+  const scores=[];
+  const rows=[];
+
+  for(let i=1;i<=6;i++){
+   const r=entry.racers[String(i)];
+
+   if(!r){
+    throw new Error(
+     i+"号艇の情報が不足しています"
+    );
+   }
+
+   const p=preview.racers?.[String(i)];
+
+   scores.push(evaluate(r,p,preview));
+
+   rows.push(`
+    <div class="racer">
+    <b>${i}号艇 ${safe(r.name||"不明")}</b>
+    <div>全国勝率：${show(r.national_win_rate)}</div>
+    <div>当地勝率：${show(r.local_win_rate)}</div>
+    <div>平均ST：${show(r.average_start_timing)}</div>
+    <div>モーター2連対率：${show(r.motor_top_2_percent,"%")}</div>
+    <div>展示タイム：${show(p?.exhibition_time)}</div>
+    <div>展示ST：${show(p?.start_timing)}</div>
+    <div>進入コース：${show(p?.course_number)}</div>
+    </div>
+   `);
+  }
+
+  // 全艇そろってから評価を更新
+  scores.forEach((v,i)=>{
+   document.getElementById(
+    "s"+(i+1)
+   ).value=v;
+  });
+
+  loadedRace={
+   date:dateInput.value,
+   venue:venue.value,
+   race:race.value
+  };
+
+  info.innerHTML=`
+   <div class="panel">
+   <b>${safe(entry.title||"開催レース")}</b>
+   <p class="note">
+   締切：${show(entry.closed_at)}
+   </p>
+   <p>
+   風速：${show(preview.wind_speed,"m/s")}
+   <br>
+   波高：${show(preview.wave_height,"cm")}
+   </p>
+   ${rows.join("")}
+   </div>
+  `;
+
+  status.textContent=
+   "✅ 出走表の取得成功！評価を更新しました。";
+
+ }catch(e){
+  status.textContent=
+   "⚠️ 取得失敗："+e.message+
+   "。開催日・競艇場・レースを確認してな。";
+  info.innerHTML="";
+ }finally{
+  btn.disabled=false;
+ }
+}
+
+[venue,race,dateInput].forEach(el=>{
+ el.addEventListener("change",()=>{
+  loadedRace=null;
+  document.getElementById("status")
+   .textContent=
+   "レースを変更しました。再取得してな。";
+  document.getElementById("raceInfo")
+   .innerHTML="";
+ });
+});
+
+// 買い目をフォーメーション風にまとめる
 function makeFormations(selected){
  const groups={};
 
@@ -191,7 +418,9 @@ function makeFormations(selected){
 
   Object.entries(secondGroups).forEach(
    ([third,bs])=>{
-    lines.push(`${a}-${bs.join("")}-${third}`);
+    lines.push(
+     `${a}-${bs.join("")}-${third}`
+    );
    }
   );
  });
@@ -199,19 +428,24 @@ function makeFormations(selected){
  return lines;
 }
 
+// 三連単予想
 function predict(){
  const scores=[];
 
  for(let i=1;i<=6;i++){
-  const raw=document.getElementById("s"+i).value;
+  const raw=document.getElementById(
+   "s"+i
+  ).value;
+
   const n=Number(raw);
 
-  if(raw.trim()==="" ||
-     !Number.isInteger(n) ||
-     n<1 || n>10){
+  if(raw.trim()===""||
+     !Number.isInteger(n)||
+     n<1||n>10){
    alert("評価は1〜10の整数で入力してな");
    return;
   }
+
   scores.push(n);
  }
 
@@ -240,103 +474,103 @@ function predict(){
  }
 
  combos.sort((x,y)=>
-  y.score-x.score ||
-  x.a-y.a ||
-  x.b-y.b ||
+  y.score-x.score||
+  x.a-y.a||
+  x.b-y.b||
   x.c-y.c
  );
 
- // 買い目点数を可変にする
- // 上位候補とのスコア差を基準に採用
- const topScore=combos[0].score;
-
- // 評価差が小さいほど許容幅を広くする
+ const top=combos[0].score;
  const tolerance=
   1.8+(10-spread)*0.28;
 
  let count=combos.filter(
-  x=>topScore-x.score<=tolerance
+  x=>top-x.score<=tolerance
  ).length;
 
- // 基本5〜15点、100円単位で購入可能
  count=Math.max(5,Math.min(15,count));
 
  const selected=combos.slice(0,count);
 
- let level;
- if(count<=7){
-  level="絞り込み型";
- }else if(count<=10){
-  level="標準型";
- }else{
-  level="混戦型";
- }
-
- // 各買い目に最低100円
  const bets=selected.map(x=>({
   ...x,amount:100
  }));
 
  let remaining=1500-count*100;
-
- // 余った資金を上位候補へ追加
  let k=0;
+
  while(remaining>=100){
   bets[k%Math.min(3,count)].amount+=100;
   remaining-=100;
   k++;
  }
 
- const formations=makeFormations(selected);
-
  const total=bets.reduce(
   (sum,x)=>sum+x.amount,0
  );
 
+ const formations=
+  makeFormations(selected);
+
+ const isReal=loadedRace&&
+  loadedRace.date===dateInput.value&&
+  loadedRace.venue===venue.value&&
+  loadedRace.race===race.value;
+
+ const level=count<=7
+  ?"絞り込み型":
+  count<=10?"標準型":"混戦型";
+
  document.getElementById("output").innerHTML=`
- <h2>🏁 ${venue.value} ${race.value}R</h2>
- <span class="tag">${level}</span>
+  <h2>🏁 ${safe(venue.options[venue.selectedIndex].text)}
+  ${safe(race.value)}R</h2>
 
- <div class="panel">
- <div class="line">
- <span>自動選択した買い目</span>
- <b>${count}点</b>
- </div>
- <div class="line">
- <span>評価の最大差</span>
- <b>${spread}</b>
- </div>
- </div>
+  <span class="tag">${level}</span>
 
- <div class="panel">
- <h2>三連単フォーメーション</h2>
- <div class="big">
- ${formations.join("<br>")}
- </div>
- </div>
+  <p class="note">
+  ${isReal
+   ?"非公式API取得データを利用"
+   :"サンプル・手入力評価を利用"}
+  </p>
 
- <h2 style="margin-top:22px">
- 買い目・資金配分
- </h2>
+  <div class="panel">
+   <div class="line">
+    <span>買い目点数</span>
+    <b>${count}点</b>
+   </div>
+   <div class="line">
+    <span>評価の最大差</span>
+    <b>${spread}</b>
+   </div>
+  </div>
 
- ${bets.map((x,i)=>`
- <div class="line">
- <span>${i+1}. ${x.key}</span>
- <b>${x.amount.toLocaleString()}円</b>
- </div>
- `).join("")}
+  <div class="panel">
+   <h2>三連単フォーメーション</h2>
+   <div class="big">
+    ${formations.join("<br>")}
+   </div>
+  </div>
 
- <div class="line total">
- <span>合計</span>
- <span>${total.toLocaleString()}円</span>
- </div>
+  <h2>買い目・資金配分</h2>
 
- <p class="note">
- ※買い目点数は候補スコアの近さで
- 自動調整しています。
- このスコアは実際の的中確率や
- 回収率を示すものではありません。
- </p>
+  ${bets.map((x,i)=>`
+   <div class="line">
+    <span>${i+1}. ${x.key}</span>
+    <b>${x.amount.toLocaleString()}円</b>
+   </div>
+  `).join("")}
+
+  <div class="line total">
+   <span>合計</span>
+   <span>${total.toLocaleString()}円</span>
+  </div>
+
+  <p class="note">
+  ※評価と買い目は試作計算です。
+  展示の行き足・風向別の展開・
+  オッズによる期待値評価は
+  まだ十分に反映していません。
+  </p>
  `;
 }
 </script>
