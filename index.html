@@ -505,12 +505,15 @@ function predict(){
   ...x,amount:100
  }));
 
+
 let remaining =
   Number(document.getElementById("budget").value)
   - count * 100;
 
+let k = 0;
 
- while(remaining>=100){
+while(remaining>=100){
+
   bets[k%Math.min(3,count)].amount+=100;
   remaining-=100;
   k++;
