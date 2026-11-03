@@ -23,10 +23,72 @@ select,input{
  width:100%;background:#0b1729;color:white;
  border:1px solid #43546d;border-radius:9px;
  padding:12px;font-size:16px
-}
-.grid{
- display:grid;grid-template-columns:repeat(3,1fr);
- gap:9px
+
+<div class="grid2">
+  <div>
+    <label for="venue">競艇場</label>
+    <select id="venue">
+      <option value="1">桐生</option>
+      <option value="2">戸田</option>
+      <option value="3">江戸川</option>
+      <option value="4">平和島</option>
+      <option value="5">多摩川</option>
+      <option value="6">浜名湖</option>
+      <option value="7">蒲郡</option>
+      <option value="8">常滑</option>
+      <option value="9">津</option>
+      <option value="10">三国</option>
+      <option value="11">びわこ</option>
+      <option value="12">住之江</option>
+      <option value="13">尼崎</option>
+      <option value="14">鳴門</option>
+      <option value="15" selected>丸亀</option>
+      <option value="16">児島</option>
+      <option value="17">宮島</option>
+      <option value="18">徳山</option>
+      <option value="19">下関</option>
+      <option value="20">若松</option>
+      <option value="21">芦屋</option>
+      <option value="22">福岡</option>
+      <option value="23">唐津</option>
+      <option value="24">大村</option>
+    </select>
+  </div>
+
+  <div>
+    <label for="race">レース</label>
+    <select id="race">
+      <option value="1">1R</option>
+      <option value="2">2R</option>
+      <option value="3" selected>3R</option>
+      <option value="4">4R</option>
+      <option value="5">5R</option>
+      <option value="6">6R</option>
+      <option value="7">7R</option>
+      <option value="8">8R</option>
+      <option value="9">9R</option>
+      <option value="10">10R</option>
+      <option value="11">11R</option>
+      <option value="12">12R</option>
+    </select>
+  </div>
+</div>
+
+<div class="racegrid" id="racegrid">
+  <button type="button" data-race="1">1R</button>
+  <button type="button" data-race="2">2R</button>
+  <button type="button" data-race="3">3R</button>
+  <button type="button" data-race="4">4R</button>
+  <button type="button" data-race="5">5R</button>
+  <button type="button" data-race="6">6R</button>
+  <button type="button" data-race="7">7R</button>
+  <button type="button" data-race="8">8R</button>
+  <button type="button" data-race="9">9R</button>
+  <button type="button" data-race="10">10R</button>
+  <button type="button" data-race="11">11R</button>
+  <button type="button" data-race="12">12R</button>
+</div>
+
 }
 .boat{
  background:#0b1729;padding:10px 6px;
